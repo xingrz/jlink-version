@@ -1,0 +1,36 @@
+name: build
+
+on:
+  push:
+    branches: '*'
+    tags: 'v*.*'
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        include:
+          - { name: linux-x64, os: ubuntu-latest, artifact: 'build/jlink-version' }
+          - { name: darwin-x64, os: macos-latest, artifact: 'build/jlink-version' }
+          - { name: win32-x64, os: windows-latest, artifact: 'build/Release/jlink-version.exe' }
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Build
+        run: |
+          cmake -B build
+          cmake --build build --config Release
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: jlink-version-${{ matrix.name }}
+          path: ${{ matrix.artifact }}
+          if-no-files-found: error

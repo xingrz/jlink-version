@@ -8,3 +8,5 @@ add_executable(
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC -ldl)

@@ -9,4 +9,10 @@ add_executable(
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC -ldl)
+if(WIN32)
+    add_subdirectory(dlfcn-win32/src)
+    target_link_libraries(${PROJECT_NAME} dl)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/dlfcn-win32/src)
+else()
+    target_link_libraries(${PROJECT_NAME} -ldl)
+endif()

@@ -1,5 +1,4 @@
 #include <dlfcn.h>
-#include <libgen.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,7 +9,7 @@ typedef int (*JLINKARM_GetDLLVersion)();
 
 int main(int argc, char const *argv[]) {
     if (argc != 2) {
-        LOGE("Usage: %s [libfile]", basename((char *)argv[0]));
+        LOGE("Usage: %s [libfile]", argv[0]);
         return -1;
     }
 

@@ -34,3 +34,29 @@ jobs:
           name: jlink-version-${{ matrix.name }}
           path: ${{ matrix.artifact }}
           if-no-files-found: error
+
+  test:
+    needs: build
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        include:
+          - { name: linux-x64, os: ubuntu-latest, lib: 'libjlinkarm.so' }
+          - { name: darwin-x64, os: macos-latest, lib: 'libjlinkarm.dylib' }
+          - { name: win32-x64, os: windows-latest, lib: 'JLink_x64.dll' }
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Download built artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: jlink-version-${{ matrix.name }}
+
+      - name: Test
+        run: |
+          chmod +x ./jlink-version
+          ./jlink-version fixtures/V7.58/${{ matrix.lib }}
